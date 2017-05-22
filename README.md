@@ -63,6 +63,8 @@ Once all of this is done, you can run the Shiny App with `shiny::runApp()`
 You'll need those packages :
 `shiny`, `scales`, `tidyverse`, `leaflet` ([Development version](http://rstudio.github.io/leaflet/)), `leaflet.extras` ([GitHub version](https://github.com/bhaskarvk/leaflet.extras))
 
+The running app can also be used here : http://shiny.parisgeo.cnrs.fr/CitiBikeEDB/
+
 
 ### Licencing
 
