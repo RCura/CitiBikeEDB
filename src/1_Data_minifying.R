@@ -1,12 +1,14 @@
 library(tidyverse)
 library(lubridate)
 
-csvFiles <- list.files(path = "data/", pattern = "*tripdata.csv")
+csvFiles <- list.files(path = "data/", pattern = "*tripdata.csv", full.names = TRUE)
 
 citibike_columns <- c("tripDuration","startTime", "endTime",
                       "startID", "startName", "startLat", "startLong",
                       "endID", "endName", "endLat", "endLong",
                       "bikeID",  "userType", "userBirth", "userGender")
+
+citibike_stations <- data_frame(ID = character(), Name = character(), Lat = double(), Long = double())
 
 for (i in 1:12){
   thisFile <- csvFiles[i]
@@ -14,8 +16,7 @@ for (i in 1:12){
   citibike_data <- read_csv(thisFile,
                             col_names = citibike_columns,
                             col_types = c("iccccddccddccic"),
-                            skip = 1) %>%
-    filter(tripDuration <= 3600) # on enleve les déplacements > 1h (moins de 2%)
+                            skip = 1)
   if (i < 10){
     citibike_data <- citibike_data %>%
       mutate(startTime = mdy_hms(startTime), # For files 01 -> 09
@@ -26,10 +27,6 @@ for (i in 1:12){
              endTime = ymd_hms(endTime))# For files 10 -> 12
   }
    
-  
-  citibike_stations <- citibike_data %>%
-    select(starts_with("start"), starts_with("end"), -ends_with("Time"))
-  
   citibike_start <-  citibike_data %>%
     select(starts_with("start"), -ends_with("Time")) %>%
     rename(ID = startID,
@@ -48,21 +45,28 @@ for (i in 1:12){
     group_by(ID, Name, Lat, Long) %>%
     summarise()
   
-  citibike_stations <- citibike_start %>%
+  citibike_both <- citibike_start %>%
     bind_rows(citibike_end) %>%
     group_by(ID, Name, Lat, Long) %>%
     summarise()
+  
+  citibike_stations <- citibike_stations %>%
+    bind_rows(citibike_both) %>%
+    group_by(ID) %>%
+    summarise(
+      Name = last(Name),
+      Lat = last(Lat),
+      Long = last(Long)
+    )
   
   citibike_data <- citibike_data %>%
     select(-startLat, -startLong, -startName, -endLat, -endLong, -endName)
   
   newName <- gsub(thisFile, pattern = ".csv", replacement = "_mini.csv")
-  newPathName <- paste0("data/minified/", newName)
-  write_csv(citibike_data, newPathName)
+  write_csv(citibike_data, newName)
+  file.remove(thisFile)
   
-  stationName <- gsub(thisFile, pattern = "tripdata.csv", replacement = "stations.csv")
-  stationPath <- paste0("data/minified/", stationName)
-  write_csv(citibike_stations, stationPath)
+  write_csv(citibike_stations, "data/CitiBike-Stations.csv", append = FALSE)
 }
 
 

@@ -12,9 +12,7 @@ Those packages are needed for the data handling : `tidyverse`, `lubridate`, and 
 The data can be downloaded on the official CitiBike data repository : https://www.citibikenyc.com/system-data
 This app is designed to analyse the data of a whole year, and it was based on 2016 data that can be found here : https://s3.amazonaws.com/tripdata/index.html
 
-1. Download all the 2016*mm*-citibike-tripdata.zip files.
-2. Extract each of them so that you have all the `csv` files
-3. Place each of those files in the `data` folder
+Run the `src/0_Data_downloading.R` script for downloading data, after setting the parameters to the year and months that you want to explore.
 
 #### File reducing
 
@@ -29,13 +27,7 @@ Run the script `src/1_Data_minifying.R` that will :
 - Rename column names (from `start station id`,`start station name` *etc.* to more formatted names like `startID`, `startName` *etc.*)
 - Extract station informations (`ID`, `Name`, `Lat`, `Long`) to other csv (one for each month of data)
 - Remove those informations (keeping `startID` and `endID`) from the trip datasets
-- Save all the newly formatted files into `minified/2016mm-citibike-tripdata_mini.csv` files
-
-#### Stations cleaning and archiving
-
-Run the script `src/2_Data_Stations_unifying.R` that will gather all the monthly stations files into a single `minified/CitiBike_stations.csv` file containing all the stations (without redundancy).
-
-It will then gather all the monthly cleaned trip files into a single zip archive named `data/citibike_data.zip`.
+- Save all the newly formatted files into `data/2016mm-citibike-tripdata_mini.csv` files
 
 #### Data compressing and filtering
 
