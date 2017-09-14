@@ -109,8 +109,8 @@ shinyServer(function(session, input, output) {
     if (!is.null(input$agePlot_brush)) {
       thisSelection <- input$agePlot_brush
       currentlyFiltred <- currentlyFiltred %>%
-        filter((2016 - userBirth) >= min(c(thisSelection$xmin, 0)),
-               (2016 - userBirth) <= max(c(thisSelection$xmax, 120)))
+        filter((2016 - as.numeric(userBirth)) >= min(c(thisSelection$xmin, 0)),
+               (2016 - as.numeric(userBirth)) <= max(c(thisSelection$xmax, 120)))
       noSelection <- FALSE
     }
     
@@ -266,7 +266,7 @@ shinyServer(function(session, input, output) {
   
   output$agePlot <- renderPlot({
     ageData <- citibike_data %>%
-      group_by(Age = (2016 - userBirth)) %>%
+      group_by(Age = (2016 - as.numeric(userBirth))) %>%
       summarise(Nb = n()) %>%
       mutate(Freq = Nb / sum(Nb)) %>%
       filter(Age <= 80)
@@ -278,7 +278,7 @@ shinyServer(function(session, input, output) {
     
     if (length(filtredSpatialData()) > 1) {
       selData <- filtredSpatialData() %>%
-        group_by(Age = (2016 - userBirth)) %>%
+        group_by(Age = (2016 - as.numeric(userBirth))) %>%
         summarise(Nb = n()) %>%
         mutate(Freq = Nb / sum(Nb)) %>%
         filter(Age <= 80)
@@ -290,7 +290,7 @@ shinyServer(function(session, input, output) {
     
     if (input$showTempFiltred && length(filtredTemporalData()) > 1) {
       selData <- filtredTemporalData() %>%
-        group_by(Age = (2016 - userBirth)) %>%
+        group_by(Age = (2016 - as.numeric(userBirth))) %>%
         summarise(Nb = n()) %>%
         mutate(Freq = Nb / sum(Nb)) %>%
         filter(Age <= 80)
