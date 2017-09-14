@@ -1,6 +1,8 @@
 # CitiBikeEDB
 ## Interactive exploration of CitiBike trips
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.891241.svg)](https://doi.org/10.5281/zenodo.891241)
+
 ### Dependencies
 
 Those packages are needed for the data handling : `tidyverse`, `lubridate`, and `rio`.
